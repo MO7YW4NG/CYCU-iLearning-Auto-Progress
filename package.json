@@ -1,6 +1,6 @@
 {
   "name": "cycu-ilearning-auto-progress",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automated video progress tracking for iLearning",
   "dependencies": {
     "commander": "^12.0.0",
