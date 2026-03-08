@@ -9,7 +9,23 @@ export interface Credentials {
 }
 
 /**
- * Read password from stdin with masking (shows * for each character).
+ * Read a single line from stdin without ANSI escape codes.
+ * `terminal: false` prevents readline from injecting cursor-control sequences.
+ */
+async function readLine(prompt: string): Promise<string> {
+  stdout.write(prompt);
+  const rl = createInterface({ input: stdin, output: stdout, terminal: false });
+  const line = await new Promise<string>((resolve) => {
+    rl.once("line", (answer: string) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+  return line;
+}
+
+/**
+ * Read password from stdin with * masking.
  */
 async function readPassword(prompt: string): Promise<string> {
   return new Promise((resolve) => {
@@ -17,10 +33,11 @@ async function readPassword(prompt: string): Promise<string> {
     const chars: string[] = [];
 
     if (!stdin.isTTY) {
-      // Fallback for non-TTY (pipe mode) — read line normally
-      const rl = createInterface({ input: stdin, output: stdout });
-      rl.question("").then((answer) => {
+      // Non-TTY fallback (piped input) — read plain line
+      const rl = createInterface({ input: stdin, output: stdout, terminal: false });
+      rl.once("line", (answer: string) => {
         rl.close();
+        stdout.write("\n");
         resolve(answer);
       });
       return;
@@ -38,13 +55,11 @@ async function readPassword(prompt: string): Promise<string> {
         stdout.write("\n");
         resolve(chars.join(""));
       } else if (key === "\u007F" || key === "\b") {
-        // Backspace
         if (chars.length > 0) {
           chars.pop();
           stdout.write("\b \b");
         }
       } else if (key === "\u0003") {
-        // Ctrl+C
         process.exit(0);
       } else if (key >= " ") {
         chars.push(key);
@@ -60,39 +75,23 @@ async function readPassword(prompt: string): Promise<string> {
  * Prompt user for credentials interactively.
  */
 export async function promptCredentials(): Promise<Credentials> {
-  const rl = createInterface({ input: stdin, output: stdout });
+  console.log("\n===  CYCU iLearning 自動進度工具  ===\n");
 
-  try {
-    console.log("\n===  CYCU iLearning 自動進度工具  ===\n");
+  const username = await readLine("學號 (例: 11345678): ");
+  const password = await readPassword("密碼: ");
 
-    const username = await rl.question(
-      "學號 (例: 11345678): "
-    );
-    rl.close(); // Close before raw mode password input
-
-    const password = await readPassword("密碼: ");
-
-    return {
-      username: username.trim(),
-      password,
-    };
-  } catch {
-    rl.close();
-    throw new Error("輸入被取消");
-  }
+  return {
+    username: username.trim(),
+    password,
+  };
 }
 
 /**
- * Ask user a yes/no question. Returns true for yes.
+ * Ask user a yes/no question. Returns true for yes (default).
  */
 export async function confirm(question: string): Promise<boolean> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    const answer = await rl.question(`${question} (Y/n): `);
-    return answer.trim().toLowerCase() !== "n";
-  } finally {
-    rl.close();
-  }
+  const answer = await readLine(`${question} (Y/n): `);
+  return answer.trim().toLowerCase() !== "n";
 }
 
 /**
@@ -123,7 +122,5 @@ export async function saveCredentials(
  * Wait for user to press Enter before closing.
  */
 export async function waitForExit(): Promise<void> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  await rl.question("\n按 Enter 關閉...");
-  rl.close();
+  await readLine("\n按 Enter 關閉...");
 }

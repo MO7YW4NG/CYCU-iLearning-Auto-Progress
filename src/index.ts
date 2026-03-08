@@ -27,25 +27,20 @@ program
 
 const opts = program.opts();
 
-// Detect if running as a standalone exe (double-clicked, no terminal args).
-// If stdin is a TTY and no credentials in env, auto-enter interactive mode.
-function shouldUseInteractive(): boolean {
-  if (opts.interactive) return true;
-  // If any CLI flags were explicitly passed, respect non-interactive mode
-  const hasExplicitFlags = opts.courseUrl || opts.loginOnly || opts.dryRun || opts.verbose;
-  if (hasExplicitFlags) return false;
-  // No credentials available → must use interactive
-  if (!process.env.CYCU_USERNAME || !process.env.CYCU_PASSWORD) return true;
-  return false;
-}
+// Evaluated once at startup before any credentials are loaded into env.
+// Re-evaluating after interactive login would give wrong result.
+const IS_INTERACTIVE: boolean =
+  opts.interactive ||
+  (!opts.courseUrl && !opts.loginOnly && !opts.dryRun && !opts.verbose &&
+    (!process.env.CYCU_USERNAME || !process.env.CYCU_PASSWORD));
 
 async function main(): Promise<void> {
-  const isInteractive = shouldUseInteractive();
+  const isInteractive = IS_INTERACTIVE;
 
   // Load config: interactive prompts or .env
   let config;
   if (isInteractive) {
-    const baseDir = path.dirname(process.argv[1] || process.cwd());
+    const baseDir = path.dirname(Deno.execPath());
     config = await loadConfigInteractive(baseDir);
     // Interactive mode defaults to headed for MFA support
     if (!opts.headed && config.headless) {
@@ -175,9 +170,5 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    // Keep window open when running standalone (double-clicked)
-    // so user can read the output before the window closes.
-    if (shouldUseInteractive() || opts.interactive) {
-      await waitForExit();
-    }
+    await waitForExit();
   });
