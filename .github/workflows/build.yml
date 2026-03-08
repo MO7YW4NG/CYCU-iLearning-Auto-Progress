@@ -6,6 +6,9 @@ on:
       - "v*"          # 推 tag (e.g. v1.0.0) 時自動 build + release
   workflow_dispatch:  # 也可手動在 Actions 頁面觸發
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest  # 用 Windows runner 確保 .exe 相容
