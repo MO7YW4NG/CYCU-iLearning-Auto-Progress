@@ -6,6 +6,7 @@
 
 透過 Microsoft SSO 登入後，自動掃描所有進行中的課程，將未完成的影片標記為 100% 已觀看。
 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/MO7YW4NG/CYCU-iLearning-Auto-Progress/total)
 ## 快速使用（執行檔）
 
 從 [Releases](../../releases) 下載最新的 `main.exe`，執行即可。
