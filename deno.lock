@@ -1,0 +1,28 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:commander@12": "12.1.0",
+    "npm:playwright-core@^1.49.0": "1.58.2"
+  },
+  "npm": {
+    "commander@12.1.0": {
+      "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="
+    },
+    "playwright-core@1.58.2": {
+      "integrity": "sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==",
+      "bin": true
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:commander@12",
+      "npm:playwright-core@^1.49.0"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:commander@12",
+        "npm:playwright-core@^1.49.0"
+      ]
+    }
+  }
+}

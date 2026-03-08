@@ -1,0 +1,17 @@
+{
+  "imports": {
+    "playwright-core": "npm:playwright-core@^1.49.0",
+    "commander": "npm:commander@^12.0.0"
+  },
+  "tasks": {
+    "dev": "deno run --allow-all --sloppy-imports src/index.ts",
+    "login": "deno run --allow-all --sloppy-imports src/index.ts --login-only --headed",
+    "compile": "deno compile --allow-all --sloppy-imports --icon assets/logo.ico --output dist/main.exe src/index.ts",
+    "check": "deno check --sloppy-imports src/index.ts"
+  },
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["ES2022", "DOM"]
+  }
+}
