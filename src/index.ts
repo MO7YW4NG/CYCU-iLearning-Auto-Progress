@@ -80,7 +80,7 @@ async function main(): Promise<void> {
           res
             .text()
             .then((body: string) => log.debug(`<< ${res.status()} ${body}`))
-            .catch(() => {});
+            .catch(() => { });
         }
       });
     }
@@ -101,14 +101,14 @@ async function main(): Promise<void> {
       courses = enrolled.map((c) => ({ id: c.id, name: c.fullname }));
     }
 
+    let totalVideos = 0;
     let totalCompleted = 0;
-    let totalSkipped = 0;
     let totalFailed = 0;
 
     for (const course of courses) {
-      log.info(`\n========================================`);
+      log.info(`\n======================================`);
       log.info(`課程: ${course.name}`);
-      log.info(`========================================`);
+      log.info(`======================================`);
 
       const videos = await getSupervideosInCourse(
         page,
@@ -117,9 +117,10 @@ async function main(): Promise<void> {
         log
       );
 
+      totalVideos += videos.length;
+
       if (videos.length === 0) {
         log.info("  所有影片已完成（或無影片）。");
-        totalSkipped++;
         continue;
       }
 
@@ -155,8 +156,8 @@ async function main(): Promise<void> {
     // Summary
     log.info("\n===== 執行結果 =====");
     log.info(`掃描課程數: ${courses.length}`);
-    log.info(`完成影片數: ${totalCompleted}`);
-    log.info(`已完成/跳過: ${totalSkipped}`);
+    log.info(`掃描影片數: ${totalVideos}`);
+    log.info(`執行影片數: ${totalCompleted}`);
     if (totalFailed > 0) log.warn(`失敗影片數: ${totalFailed}`);
   } finally {
     await context.close();

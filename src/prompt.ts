@@ -75,7 +75,7 @@ async function readPassword(prompt: string): Promise<string> {
  * Prompt user for credentials interactively.
  */
 export async function promptCredentials(): Promise<Credentials> {
-  console.log("\n===  CYCU iLearning 自動進度工具  ===\n");
+  console.log("\n=====  CYCU iLearning 自動進度工具  =====\n");
 
   const username = await readLine("學號 (例: 11345678): ");
   const password = await readPassword("密碼: ");
