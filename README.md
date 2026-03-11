@@ -4,7 +4,7 @@
 
 自動完成中原大學 iLearning (Moodle) 平台上所有 SuperVideo 影片進度。
 
-透過 Microsoft SSO 登入後，自動掃描所有進行中的課程，將未完成的影片標記為 100% 已觀看。
+透過 Microsoft SSO 登入後，自動掃描所有進行中且要求完成率的課程，將未完成的影片標記為 100% 已觀看。
 
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/MO7YW4NG/CYCU-iLearning-Auto-Progress/total)
 ## 快速使用（執行檔）
